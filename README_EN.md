@@ -6,7 +6,7 @@
 
 A monitor works with [ServerStatus](https://github.com/cppla/ServerStatus), using Telegram as notifier.
 
-[中文](https://github.com/dtcokr/docker-serverstatus-monitor/blob/main/README_EN.md) | EN
+[中文](https://github.com/dtcokr/docker-serverstatus-monitor/blob/main/README.md) | EN
 
 ## Usage
 
