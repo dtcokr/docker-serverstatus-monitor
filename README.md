@@ -6,7 +6,7 @@
 
 与 [ServerStatus](https://github.com/cppla/ServerStatus) 一同工作的服务器监视器，部署在 Server 端，并将告警推送至 Telegram。
 
-中文 | [EN](https://github.com/dtcokr/docker-serverstatus-monitor/README_EN.md)
+中文 | [EN](https://github.com/dtcokr/docker-serverstatus-monitor/blob/main/README_EN.md)
 
 ## 使用
 
