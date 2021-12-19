@@ -5,7 +5,7 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/dtcokr/docker-serverstatus-monitor)
 
 - 与 [ServerStatus](https://github.com/cppla/ServerStatus) 一同工作的服务器监视器，部署在 Server 端，并将告警推送至 Telegram。
-- 可检测的指标：
+- 可监控的指标：
   - 系统负载
   - 磁盘使用率
   - 具有权重的三网丢包率
