@@ -169,11 +169,11 @@ while True:
             elif server['name'] in bknotify and server['name'] not in blocked:
                 if lang_uage == 'EN':
                     bot.send_message(chat_id=account_id,
-                                    text=f"*#ServerStatus*\n\n*{server['name']}* packet loss rate is *LOW*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %",
+                                    text=f"*#ServerStatus*\n\n*{server['name']}* packet loss rate is *NORMAL*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %",
                                     parse_mode='Markdown')
                 elif lang_uage == 'ZH':
                     bot.send_message(chat_id=account_id,
-                                    text=f"*#ServerStatus*\n\n*{server['name']}* 的丢包率*恢复正常*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %",
+                                    text=f"*#ServerStatus*\n\n*{server['name']}* 的丢包率已*恢复正常*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %",
                                     parse_mode='Markdown')
                 bknotify = list(filter((server['name']).__ne__, bknotify))
                 logging.info(f"Server unblocked: {server['name']}")
@@ -185,7 +185,7 @@ while True:
                                     parse_mode='Markdown')
                 elif lang_uage == 'ZH':
                     bot.send_message(chat_id=account_id,
-                                    text=f"*#ServerStatus*\n\n*{server['name']}* 的系统负载*恢复正常*.\n1,5,15 min load: {server['load_1']}, {server['load_5']}, {server['load_15']}",
+                                    text=f"*#ServerStatus*\n\n*{server['name']}* 的系统负载已*恢复正常*.\n1,5,15 min load: {server['load_1']}, {server['load_5']}, {server['load_15']}",
                                     parse_mode='Markdown')
                 hlnotify = list(filter((server['name']).__ne__, hlnotify))
                 logging.info(f"Remove high load server: {server['name']}, load {load}")
@@ -231,11 +231,11 @@ while True:
     except Exception as e:
         if lang_uage == 'EN':
             bot.send_message(chat_id=account_id,
-                            text='*#ServerStatus*\n\nServer monitor killed by error, please check.',
+                            text='*#ServerStatus*\n\nServer monitor has an error, please check.',
                             parse_mode='Markdown')
         elif lang_uage == 'ZH':
             bot.send_message(chat_id=account_id,
-                            text='*#ServerStatus*\n\n服务器监视器遇到问题停止工作，请查看。',
+                            text='*#ServerStatus*\n\n服务器监视器遇到问题，请查看。',
                             parse_mode='Markdown')
         logging.error(f'Server monitor killed by error.\n\n{e}')
         break
