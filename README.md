@@ -15,6 +15,7 @@
 ## 挂载卷
 
 `/path/to/json:/ServerStatus/json` --- `stats.json` 所在的目录，数据的来源
+
 `/path/to/log:/ServerStatus/log` --- `server-monitor.log` 所在的目录，日志的归宿
 
 ## Docker 环境变量
