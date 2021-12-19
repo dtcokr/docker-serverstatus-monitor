@@ -28,7 +28,7 @@ $ docker run \
 ```yaml
 services:
     serstatmon:
-        image: dtcokr/
+        image: dtcokr/serverstatus-monitor
         container_name: serstatmon
         restart: always
         volumes:
