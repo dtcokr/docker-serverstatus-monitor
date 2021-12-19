@@ -14,24 +14,37 @@
 
 ## 挂载卷
 
-`/path/to/json:/ServerStatus/json` --- `stats.json` 所在的目录，数据的来源
-`/path/to/log:/ServerStatus/log` --- `server-monitor.log` 所在的目录，日志的归宿
+`/path/to/json:/ServerStatus/json` - `stats.json` 所在的目录，数据的来源
+`/path/to/log:/ServerStatus/log` - `server-monitor.log` 所在的目录，日志的归宿
 
 ## Docker 环境变量
 
 `BOT_TOKEN` - **必填** - Telegram Bot 令牌，去找 _Bot Father_ 要
+
 `ACC_ID` - **必填** - 你用于接收告警的 Telegram 用户 ID，很多 Bot 可以获取
+
 `MON_INTRVL` - 可选 - 读取数据的间隔时间，**默认 10 秒**
+
 `PL_THRES` - 可选 - 三网总计丢包率告警阈值，**默认 90%，即 30% 各网**，与三网**权重**共同作用，详见下方规则
+
 `PL_CM` - 可选 - CM 网络丢包率权重，**默认 1.0**
+
 `PL_CT` - 可选 - CT 网络丢包率权重，**默认 1.0**
+
 `PL_CU` - 可选 - CU 网络丢包率权重，**默认 1.0**
+
 `SL_THRES` - **必填** - 系统负载告警阈值，以 **15 分钟均值（15 min load average）** 为准
+
 `DU_THRES` - **必填** - 磁盘使用率告警阈值，百分数值，_如：_ `DU_THRES=85` 为 85% 时告警
+
 `BN_THRES` - 可选 - 发出高丢包率告警前需要被记录的次数，**默认 6**
+
 `LN_THRES` - 可选 - 发出高负载告警前需要被记录的次数，**默认 6**
+
 `ON_THRES` - 可选 - 发出离线告警前需要被记录的次数，**默认 6**
+
 `LOG_LVL` - 可选 - 日志级别，**默认 INFO**，可选`DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`
+
 `LANG_UAGE` - 可选 - 语言版本，**默认 ZH 中文**，可选`ZH`, `EN`(English)
 
 ### `PL_CM`, `PL_CT`, `PL_CU` 权重以及 `PL_THRES` 阈值
