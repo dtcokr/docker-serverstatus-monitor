@@ -21,6 +21,7 @@
 $ docker run \
     -v /path/to/json:/ServerStatus/json \
     -v /path/to/log:/ServerStatus/log \
+    -v /etc/localtime:/etc/localtime:ro \
     dtcokr/serverstatus-monitor
 ```
 
