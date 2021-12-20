@@ -35,6 +35,7 @@ services:
         volumes:
             - /root/ServerStatus/json:/ServerStatus/json
             - /root/ServerStatus/log:/ServerStatus/log
+            - /etc/localtime:/etc/localtime:ro
         environment:
             - BOT_TOKEN=
             - ACC_ID=
@@ -47,6 +48,7 @@ services:
 
 - `/path/to/json:/ServerStatus/json` --- `stats.json` 所在的目录，数据的来源
 - `/path/to/log:/ServerStatus/log` --- `server-monitor.log` 所在的目录，日志的归宿
+- `/etc/localtime:/etc/localtime:ro` --- 将日志的时区设定为系统的时区
 
 ## Docker 环境变量
 
