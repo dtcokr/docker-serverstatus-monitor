@@ -8,9 +8,10 @@ import logging
 import os
 
 
-## Preferences
+## preferences
 bot_token = os.getenv('BOT_TOKEN') # telegram bot token
 account_id = int(os.getenv('ACC_ID')) # telegram id
+server_id = '\n' + os.getenv('SERVER_ID', '').replace('_', '\_') # server identification in case you have multiple servers
 monitor_interval = int(os.getenv('MON_INTRVL', 10)) # in seconds
 packet_loss_threshold = int(os.getenv('PL_THRES', 90)) # % of total packet loss
 packet_loss_weight_cm = float(os.getenv('PL_CM', 1.0)) # weight of CM packet loss
@@ -32,7 +33,7 @@ logging.basicConfig(filename=log_file,
 
 
 
-## code starts
+## codes start
 offline = []
 blocked = []
 highload = []
@@ -51,13 +52,13 @@ bot = Bot(bot_token)
 logging.info('Server monitor started.')
 if lang_uage == 'EN':
     bot.send_message(chat_id=account_id, 
-                    text='*#ServerStatus*\n\nServer monitor started.',
+                    text=f'*#ServerStatus*\n\nServer monitor started.{server_id}',
                     parse_mode='Markdown')
 elif lang_uage == 'ZH':
     bot.send_message(chat_id=account_id, 
-                    text='*#ServerStatus*\n\n服务器监视器已启动。',
+                    text=f'*#ServerStatus*\n\n服务器监视器已启动。{server_id}',
                     parse_mode='Markdown')
-time.sleep(5)
+# time.sleep(5)
 while True:
     try:
         with open(stats_json, 'r', encoding='utf-8') as f:
@@ -231,12 +232,11 @@ while True:
     except Exception as e:
         if lang_uage == 'EN':
             bot.send_message(chat_id=account_id,
-                            text='*#ServerStatus*\n\nServer monitor has an error, please check.',
+                            text=f'*#ServerStatus*\n\nServer monitor has an error, please check log.{server_id}',
                             parse_mode='Markdown')
         elif lang_uage == 'ZH':
             bot.send_message(chat_id=account_id,
-                            text='*#ServerStatus*\n\n服务器监视器遇到问题，请查看。',
+                            text=f'*#ServerStatus*\n\n服务器监视器遇到问题，请查看日志。{server_id}',
                             parse_mode='Markdown')
         logging.error(f'Server monitor killed by error.\n\n{e}')
         break
-
