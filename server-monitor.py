@@ -6,6 +6,7 @@ import time
 from telegram import Bot
 import logging
 import os
+import signal
 
 
 ## preferences
@@ -26,28 +27,65 @@ log_level = os.getenv('LOG_LVL', 'INFO').upper() # log level
 lang_uage = os.getenv('LANG_UAGE', 'ZH') # language
 stats_json = '/ServerStatus/json/stats.json' # change log location if needed
 log_file = '/ServerStatus/log/server-monitor.log' # log file location
+stash_json = '/ServerStatus/json/interrupt.json' # stash current lists when monitor is killed
 logging.basicConfig(filename=log_file, 
                     level=log_level, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-
-
 ## codes start
-offline = []
-blocked = []
-highload = []
-diskfull = []
 
-olnotify = []
-bknotify = []
-hlnotify = []
-dfnotify = []
+## check if stash exist
+if os.path.isfile(stash_json):
+    with open(stash_json, 'r') as f_read:
+        j2dict = json.load(f_read)
+    offline = j2dict['offline']
+    blocked = j2dict['blocked']
+    highload = j2dict['highload']
+    diskfull = j2dict['diskfull']
+
+    olnotify = j2dict['olnotify']
+    bknotify = j2dict['bknotify']
+    hlnotify = j2dict['hlnotify']
+    dfnotify = j2dict['dfnotify']
+
+    os.remove(stash_json)
+else:
+    offline = []
+    blocked = []
+    highload = []
+    diskfull = []
+
+    olnotify = []
+    bknotify = []
+    hlnotify = []
+    dfnotify = []
 
 ## whitelist for servers that do not alert when system load is high
 load_wl = []
 
-## gathering data
+## function to stash lists
+def _stash(offline, blocked, highload, diskfull, olnotify, bknotify, hlnotify, dfnotify, l2file):
+    jdict = {}
+    jdict['offline'] = offline
+    jdict['blocked'] = blocked
+    jdict['highload'] = highload
+    jdict['diskfull'] = diskfull
+
+    jdict['olnotify'] = olnotify
+    jdict['bknotify'] = bknotify
+    jdict['hlnotify'] = hlnotify
+    jdict['dfnotify'] = dfnotify
+    with open(l2file, 'w') as f_write:
+        json.dump(jdict, f_write, indent=4)
+    logging.info('Lists stashed to interrupt.json.')
+
+## function to receive docker signal
+def _handle_sigterm(*args):
+    raise KeyboardInterrupt()
+
+signal.signal(signal.SIGTERM, _handle_sigterm)
+
 bot = Bot(bot_token)
 logging.info('Server monitor started.')
 if lang_uage == 'EN':
@@ -61,6 +99,7 @@ elif lang_uage == 'ZH':
 # time.sleep(5)
 while True:
     try:
+        ## data gathering
         with open(stats_json, 'r', encoding='utf-8') as f:
             js = json.load(f)
         for server in js['servers']:
@@ -117,16 +156,16 @@ while True:
                             highload = list(filter((server['name']).__ne__, highload))
                             logging.info(f"Remove high load server: {server['name']}, load {load}")
                             
-        ## nofify when threshold reached
+        ## notification
         for server in js['servers']:
             if blocked.count(server['name']) == block_notify_threshold and bknotify.count(server['name']) < 1:
                 if lang_uage == 'EN':
                     bot.send_message(chat_id=account_id,
-                                    text=f"*#ServerStatus*\n\n*{server['name']}* packet loss rate is *HIGH*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %",
+                                    text=f"*#ServerStatus*\n\n*{server['name']}* packet loss rate is *HIGH*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %{server_id}",
                                     parse_mode='Markdown')
                 elif lang_uage == 'ZH':
                     bot.send_message(chat_id=account_id,
-                                    text=f"*#ServerStatus*\n\n*{server['name']}* 的丢包率*较高*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %",
+                                    text=f"*#ServerStatus*\n\n*{server['name']}* 的丢包率*较高*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %{server_id}",
                                     parse_mode='Markdown')
                 bknotify.append(server['name'])
                 logging.info(f"Blocked server notified: {server['name']}")
@@ -134,11 +173,11 @@ while True:
             elif offline.count(server['name']) == offline_notify_threshold and olnotify.count(server['name']) < 1:
                 if lang_uage == 'EN':
                     bot.send_message(chat_id=account_id,
-                                    text=f"*#ServerStatus*\n\n*{server['name']}* is *OFFLINE*.",
+                                    text=f"*#ServerStatus*\n\n*{server['name']}* is *OFFLINE*.{server_id}",
                                     parse_mode='Markdown')
                 elif lang_uage == 'ZH':
                     bot.send_message(chat_id=account_id,
-                                    text=f"*#ServerStatus*\n\n*{server['name']}* *已离线*.",
+                                    text=f"*#ServerStatus*\n\n*{server['name']}* *已离线*.{server_id}",
                                     parse_mode='Markdown')
                 olnotify.append(server['name'])
                 logging.info(f"Offline server notified: {server['name']}")
@@ -146,11 +185,11 @@ while True:
             elif highload.count(server['name']) == load_notify_threshold and hlnotify.count(server['name']) < 1:
                 if lang_uage == 'EN':
                     bot.send_message(chat_id=account_id,
-                                    text=f"*#ServerStatus*\n\n*{server['name']}* is under *HEAVY LOAD*.\n1,5,15 min load: {server['load_1']}, {server['load_5']}, {server['load_15']}",
+                                    text=f"*#ServerStatus*\n\n*{server['name']}* is under *HEAVY LOAD*.\n1,5,15 min load: {server['load_1']}, {server['load_5']}, {server['load_15']}{server_id}",
                                     parse_mode='Markdown')
                 elif lang_uage == 'ZH':
                     bot.send_message(chat_id=account_id,
-                                    text=f"*#ServerStatus*\n\n*{server['name']}* 的系统负载*较高*.\n1,5,15 min load: {server['load_1']}, {server['load_5']}, {server['load_15']}",
+                                    text=f"*#ServerStatus*\n\n*{server['name']}* 的系统负载*较高*.\n1,5,15 min load: {server['load_1']}, {server['load_5']}, {server['load_15']}{server_id}",
                                     parse_mode='Markdown')
                 hlnotify.append(server['name'])
                 logging.info(f"Highload server notified: {server['name']}")
@@ -158,11 +197,11 @@ while True:
             elif server['name'] in olnotify and server['name'] not in offline:
                 if lang_uage == 'EN':
                     bot.send_message(chat_id=account_id,
-                                    text=f"*#ServerStatus*\n\n*{server['name']}* is *BACK ONLINE*.",
+                                    text=f"*#ServerStatus*\n\n*{server['name']}* is *BACK ONLINE*.{server_id}",
                                     parse_mode='Markdown')
                 elif lang_uage == 'ZH':
                     bot.send_message(chat_id=account_id,
-                                    text=f"*#ServerStatus*\n\n*{server['name']}* 已恢复*在线状态*.",
+                                    text=f"*#ServerStatus*\n\n*{server['name']}* 已恢复*在线状态*.{server_id}",
                                     parse_mode='Markdown')
                 olnotify = list(filter((server['name']).__ne__, olnotify))
                 logging.info(f"Server back online: {server['name']}")
@@ -170,11 +209,11 @@ while True:
             elif server['name'] in bknotify and server['name'] not in blocked:
                 if lang_uage == 'EN':
                     bot.send_message(chat_id=account_id,
-                                    text=f"*#ServerStatus*\n\n*{server['name']}* packet loss rate is *NORMAL*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %",
+                                    text=f"*#ServerStatus*\n\n*{server['name']}* packet loss rate is *NORMAL*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %{server_id}",
                                     parse_mode='Markdown')
                 elif lang_uage == 'ZH':
                     bot.send_message(chat_id=account_id,
-                                    text=f"*#ServerStatus*\n\n*{server['name']}* 的丢包率已*恢复正常*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %",
+                                    text=f"*#ServerStatus*\n\n*{server['name']}* 的丢包率已*恢复正常*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %{server_id}",
                                     parse_mode='Markdown')
                 bknotify = list(filter((server['name']).__ne__, bknotify))
                 logging.info(f"Server unblocked: {server['name']}")
@@ -182,17 +221,17 @@ while True:
             elif server['name'] in hlnotify and server['name'] not in highload:
                 if lang_uage == 'EN':
                     bot.send_message(chat_id=account_id,
-                                    text=f"*#ServerStatus*\n\n*{server['name']}* is under *NORMAL LOAD*.\n1,5,15 min load: {server['load_1']}, {server['load_5']}, {server['load_15']}",
+                                    text=f"*#ServerStatus*\n\n*{server['name']}* is under *NORMAL LOAD*.\n1,5,15 min load: {server['load_1']}, {server['load_5']}, {server['load_15']}{server_id}",
                                     parse_mode='Markdown')
                 elif lang_uage == 'ZH':
                     bot.send_message(chat_id=account_id,
-                                    text=f"*#ServerStatus*\n\n*{server['name']}* 的系统负载已*恢复正常*.\n1,5,15 min load: {server['load_1']}, {server['load_5']}, {server['load_15']}",
+                                    text=f"*#ServerStatus*\n\n*{server['name']}* 的系统负载已*恢复正常*.\n1,5,15 min load: {server['load_1']}, {server['load_5']}, {server['load_15']}{server_id}",
                                     parse_mode='Markdown')
                 hlnotify = list(filter((server['name']).__ne__, hlnotify))
                 logging.info(f"Remove high load server: {server['name']}, load {load}")
                 # time.sleep(5)
                     
-        ## notify when disk >= `disk_threshold` full
+        ## disk usage data gathering & notification
         for server in js['servers']:
             isonline = server['online4']
             if isonline is True:
@@ -200,15 +239,15 @@ while True:
                     diskfull.append(server['name'])
                     if lang_uage == 'EN':
                         bot.send_message(chat_id=account_id,
-                                        text=f"*#ServerStatus*\n\nDisk usage of *{server['name']}* has reached *{disk_threshold}%*.\nUsage: {round(server['hdd_used']/1024, 2)}/{round(server['hdd_total']/1024, 2)} GB",
+                                        text=f"*#ServerStatus*\n\nDisk usage of *{server['name']}* has reached *{disk_threshold}%*.\nUsage: {round(server['hdd_used']/1024, 2)}/{round(server['hdd_total']/1024, 2)} GB{server_id}",
                                         parse_mode='Markdown')
                     elif lang_uage == 'ZH':
                         bot.send_message(chat_id=account_id,
-                                        text=f"*#ServerStatus*\n\n*{server['name']}* 的磁盘使用率已达到 *{disk_threshold}%*.\n使用量: {round(server['hdd_used']/1024, 2)}/{round(server['hdd_total']/1024, 2)} GB",
+                                        text=f"*#ServerStatus*\n\n*{server['name']}* 的磁盘使用率已达到 *{disk_threshold}%*.\n使用量: {round(server['hdd_used']/1024, 2)}/{round(server['hdd_total']/1024, 2)} GB{server_id}",
                                         parse_mode='Markdown')
                     dfnotify.append(server['name'])
                     logging.info(f"Disk full server notified: {server['name']}")
-                    time.sleep(5)
+                    # time.sleep(5)
                 elif (server['hdd_used'] / (server['hdd_total'] if server['hdd_total'] != 0 else 1e16) < disk_threshold/100) and (server['name'] in dfnotify):
                     dfnotify = list(filter((server['name']).__ne__, dfnotify))
                     logging.info(f"Disk usage of *{server['name']}* is lower.")
@@ -228,6 +267,7 @@ while True:
     except KeyboardInterrupt:
         print("\n**\nManually stopped\n**.")
         logging.info('Manually stopped')
+        _stash(offline, blocked, highload, diskfull, olnotify, bknotify, hlnotify, dfnotify, stash_json)
         break
     except Exception as e:
         if lang_uage == 'EN':
@@ -238,5 +278,6 @@ while True:
             bot.send_message(chat_id=account_id,
                             text=f'*#ServerStatus*\n\n服务器监视器遇到问题，请查看日志。{server_id}',
                             parse_mode='Markdown')
-        logging.error(f'Server monitor killed by error.\n\n{e}')
+        logging.error(f'Server monitor killed by an error.\n\n{e}')
+        _stash(offline, blocked, highload, diskfull, olnotify, bknotify, hlnotify, dfnotify, stash_json)
         break
