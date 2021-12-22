@@ -3,7 +3,7 @@
 
 import json
 import time
-from urllib import request, parse
+import requests
 import logging
 import os
 import signal
@@ -35,7 +35,6 @@ logging.basicConfig(filename=log_file,
 
 ## check if stash exist
 if os.path.isfile(stash_json):
-    logging.info('Stash file found, reading from it.')
     with open(stash_json, 'r') as f_read:
         j2dict = json.load(f_read)
     offline = j2dict['offline']
@@ -49,9 +48,7 @@ if os.path.isfile(stash_json):
     dfnotify = j2dict['dfnotify']
 
     os.remove(stash_json)
-    logging.info('Stash file removed.')
 else:
-    logging.info('Stash file NOT found, lists are new.')
     offline = []
     blocked = []
     highload = []
@@ -89,15 +86,9 @@ signal.signal(signal.SIGTERM, _handle_sigterm)
 
 ## function to call Telegram API
 def tapi_call(text):
-    logging.info('Calling Telegram.')
     tapi_url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
     payload = {'chat_id': account_id, 'text': text, 'parse_mode': 'Markdown'}
-    payload = parse.urlencode(payload)
-    payload = payload.encode('ascii')
-    req = request.Request(tapi_url, data=payload, method='GET')
-    with request.urlopen(req) as response:
-        result = response.read()
-    logging.debug(result)
+    requests.get(tapi_url, params=payload)
 
 ## monitor starts
 logging.info('Server monitor started.')
@@ -254,8 +245,8 @@ while True:
         logging.debug(f"Server(s) in [dfnotify]: {dfnotify}")
         
     except KeyboardInterrupt:
-        print("\n**\nManually stopped.\n**.")
-        logging.info('Manually stopped.')
+        print("\n**\nManually stopped\n**.")
+        logging.info('Manually stopped')
         _stash(offline, blocked, highload, diskfull, olnotify, bknotify, hlnotify, dfnotify, stash_json)
         break
     except Exception as e:
@@ -268,4 +259,3 @@ while True:
         logging.error(f'Server monitor killed by an error.\n\n{e}')
         _stash(offline, blocked, highload, diskfull, olnotify, bknotify, hlnotify, dfnotify, stash_json)
         break
-
