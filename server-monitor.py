@@ -88,7 +88,16 @@ signal.signal(signal.SIGTERM, _handle_sigterm)
 def _tapi_call(text):
     tapi_url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
     payload = {'chat_id': account_id, 'text': text, 'parse_mode': 'Markdown'}
-    requests.get(tapi_url, params=payload)
+    for _ in range(5):
+        try:
+            requests.get(tapi_url, params=payload)
+        except Exception as e:
+            if lang_uage == 'EN':
+                logging.error(f'{e}\nretrying..')
+            elif lang_uage == 'ZH':
+                logging.error(f'{e}\n正在重试..')
+        else:
+            break
 
 ## monitor starts
 logging.info('Server monitor started.')
