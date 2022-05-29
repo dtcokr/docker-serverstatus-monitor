@@ -6,6 +6,7 @@ on:
       - 'test'
     paths-ignore:
       - '.github/workflows/**'
+  workflow_dispatch:
 
 jobs:
   docker:
