@@ -12,7 +12,7 @@ import signal
 ## preferences
 bot_token = os.getenv('BOT_TOKEN') # telegram bot token
 account_id = int(os.getenv('ACC_ID')) # telegram id
-server_id = '\n' + os.getenv('SERVER_ID', '').replace('_', '\_') # server identification in case you have multiple servers
+server_id = os.getenv('SERVER_ID', '').replace('_', '\_') # server identification in case you have multiple servers
 monitor_interval = int(os.getenv('MON_INTRVL', 10)) # in seconds
 packet_loss_threshold = int(os.getenv('PL_THRES', 90)) # % of total packet loss
 packet_loss_weight_cm = float(os.getenv('PL_CM', 1.0)) # weight of CM packet loss
