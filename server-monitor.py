@@ -102,10 +102,10 @@ def _tgapi_call(text):
 ## monitor starts
 logging.info('Server monitor started.')
 if lang_uage == 'EN':
-    text = f'*#ServerStatus*\n\nServer monitor started.{server_id}'
+    text = f'#ServerStatus {server_id}\nServer monitor started.'
     _tgapi_call(text)
 elif lang_uage == 'ZH':
-    text=f'*#ServerStatus*\n\n服务器监视器已启动。{server_id}'
+    text=f'#ServerStatus {server_id}\n服务器监视器已启动。'
     _tgapi_call(text)
 
 while True:
@@ -170,55 +170,55 @@ while True:
         for server in js['servers']:
             if blocked.count(server['name']) == block_notify_threshold and bknotify.count(server['name']) < 1:
                 if lang_uage == 'EN':
-                    text=f"*#ServerStatus*\n\n*{server['name']}* packet loss rate is *HIGH*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %{server_id}",
+                    text=f"#ServerStatus {server_id}\n*{server['name']}* packet loss rate is *HIGH*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %",
                     _tgapi_call(text)
                 elif lang_uage == 'ZH':
-                    text=f"*#ServerStatus*\n\n*{server['name']}* 的丢包率*较高*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %{server_id}",
+                    text=f"#ServerStatus {server_id}\n*{server['name']}* 的丢包率*较高*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %",
                     _tgapi_call(text)
                 bknotify.append(server['name'])
                 logging.info(f"Blocked server notified: {server['name']}")
             elif offline.count(server['name']) == offline_notify_threshold and olnotify.count(server['name']) < 1:
                 if lang_uage == 'EN':
-                    text=f"*#ServerStatus*\n\n*{server['name']}* is *OFFLINE*.{server_id}",
+                    text=f"#ServerStatus {server_id}\n*{server['name']}* is *OFFLINE*.",
                     _tgapi_call(text)
                 elif lang_uage == 'ZH':
-                    text=f"*#ServerStatus*\n\n*{server['name']}* *已离线*.{server_id}",
+                    text=f"#ServerStatus {server_id}\n*{server['name']}* *已离线*.",
                     _tgapi_call(text)
                 olnotify.append(server['name'])
                 logging.info(f"Offline server notified: {server['name']}")
             elif highload.count(server['name']) == load_notify_threshold and hlnotify.count(server['name']) < 1:
                 if lang_uage == 'EN':
-                    text=f"*#ServerStatus*\n\n*{server['name']}* is under *HEAVY LOAD*.\n1,5,15 min load: {server['load_1']}, {server['load_5']}, {server['load_15']}{server_id}",
+                    text=f"#ServerStatus {server_id}\n*{server['name']}* is under *HEAVY LOAD*.\n1,5,15 min load: {server['load_1']}, {server['load_5']}, {server['load_15']}",
                     _tgapi_call(text)
                 elif lang_uage == 'ZH':
-                    text=f"*#ServerStatus*\n\n*{server['name']}* 的系统负载*较高*.\n1,5,15 min load: {server['load_1']}, {server['load_5']}, {server['load_15']}{server_id}",
+                    text=f"#ServerStatus {server_id}\n*{server['name']}* 的系统负载*较高*.\n1,5,15 min load: {server['load_1']}, {server['load_5']}, {server['load_15']}",
                     _tgapi_call(text)
                 hlnotify.append(server['name'])
                 logging.info(f"Highload server notified: {server['name']}")
             elif server['name'] in olnotify and server['name'] not in offline:
                 if lang_uage == 'EN':
-                    text=f"*#ServerStatus*\n\n*{server['name']}* is *BACK ONLINE*.{server_id}",
+                    text=f"#ServerStatus {server_id}\n*{server['name']}* is *BACK ONLINE*.",
                     _tgapi_call(text)
                 elif lang_uage == 'ZH':
-                    text=f"*#ServerStatus*\n\n*{server['name']}* 已恢复*在线状态*.{server_id}",
+                    text=f"#ServerStatus {server_id}\n*{server['name']}* 已恢复*在线状态*.",
                     _tgapi_call(text)
                 olnotify = list(filter((server['name']).__ne__, olnotify))
                 logging.info(f"Server back online: {server['name']}")
             elif server['name'] in bknotify and server['name'] not in blocked:
                 if lang_uage == 'EN':
-                    text=f"*#ServerStatus*\n\n*{server['name']}* packet loss rate is back to *NORMAL*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %{server_id}",
+                    text=f"#ServerStatus {server_id}\n*{server['name']}* packet loss rate is back to *NORMAL*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %",
                     _tgapi_call(text)
                 elif lang_uage == 'ZH':
-                    text=f"*#ServerStatus*\n\n*{server['name']}* 的丢包率已*恢复正常*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %{server_id}",
+                    text=f"#ServerStatus {server_id}\n*{server['name']}* 的丢包率已*恢复正常*.\n*CT:* {server['ping_189']*packet_loss_weight_ct} %\n*CM:* {server['ping_10086']*packet_loss_weight_cm} %\n*CU:* {server['ping_10010']*packet_loss_weight_cu} %",
                     _tgapi_call(text)
                 bknotify = list(filter((server['name']).__ne__, bknotify))
                 logging.info(f"Server unblocked: {server['name']}")
             elif server['name'] in hlnotify and server['name'] not in highload:
                 if lang_uage == 'EN':
-                    text=f"*#ServerStatus*\n\n*{server['name']}* is back to *NORMAL LOAD*.\n1,5,15 min load: {server['load_1']}, {server['load_5']}, {server['load_15']}{server_id}",
+                    text=f"#ServerStatus {server_id}\n*{server['name']}* is back to *NORMAL LOAD*.\n1,5,15 min load: {server['load_1']}, {server['load_5']}, {server['load_15']}",
                     _tgapi_call(text)
                 elif lang_uage == 'ZH':
-                    text=f"*#ServerStatus*\n\n*{server['name']}* 的系统负载已*恢复正常*.\n1,5,15 min load: {server['load_1']}, {server['load_5']}, {server['load_15']}{server_id}",
+                    text=f"#ServerStatus {server_id}\n*{server['name']}* 的系统负载已*恢复正常*.\n1,5,15 min load: {server['load_1']}, {server['load_5']}, {server['load_15']}",
                     _tgapi_call(text)
                 hlnotify = list(filter((server['name']).__ne__, hlnotify))
                 logging.info(f"Remove high load server: {server['name']}, load {load}")
@@ -230,10 +230,10 @@ while True:
                 if (server['hdd_used'] / (server['hdd_total'] if server['hdd_total'] != 0 else 1e16) >= disk_threshold/100) and (server['name'] not in dfnotify):
                     diskfull.append(server['name'])
                     if lang_uage == 'EN':
-                        text=f"*#ServerStatus*\n\nDisk usage of *{server['name']}* has reached *{disk_threshold}%*.\nUsage: {round(server['hdd_used']/1024, 2)}/{round(server['hdd_total']/1024, 2)} GB{server_id}",
+                        text=f"#ServerStatus {server_id}\nDisk usage of *{server['name']}* has reached *{disk_threshold}%*.\nUsage: {round(server['hdd_used']/1024, 2)}/{round(server['hdd_total']/1024, 2)} GB",
                         _tgapi_call(text)
                     elif lang_uage == 'ZH':
-                        text=f"*#ServerStatus*\n\n*{server['name']}* 的磁盘使用率已达到 *{disk_threshold}%*.\n使用量: {round(server['hdd_used']/1024, 2)}/{round(server['hdd_total']/1024, 2)} GB{server_id}",
+                        text=f"#ServerStatus {server_id}\n*{server['name']}* 的磁盘使用率已达到 *{disk_threshold}%*.\n使用量: {round(server['hdd_used']/1024, 2)}/{round(server['hdd_total']/1024, 2)} GB",
                         _tgapi_call(text)
                     dfnotify.append(server['name'])
                     logging.info(f"Disk full server notified: {server['name']}")
@@ -260,10 +260,10 @@ while True:
         break
     except Exception as e:
         if lang_uage == 'EN':
-            text=f'*#ServerStatus*\n\nServer monitor has an error, please check log.{server_id}',
+            text=f'#ServerStatus {server_id}\nServer monitor has an error, please check log.',
             _tgapi_call(text)
         elif lang_uage == 'ZH':
-            text=f'*#ServerStatus*\n\n服务器监视器遇到问题，请查看日志。{server_id}',
+            text=f'#ServerStatus {server_id}\n服务器监视器遇到问题，请查看日志。',
             _tgapi_call(text)
         logging.error(f'Server monitor killed by an error.\n\n{e}')
         _stash(offline, blocked, highload, diskfull, olnotify, bknotify, hlnotify, dfnotify, stash_json)
