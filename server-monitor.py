@@ -13,6 +13,7 @@ import signal
 bot_token = os.getenv('BOT_TOKEN') # telegram bot token
 account_id = int(os.getenv('ACC_ID')) # telegram id
 server_id = os.getenv('SERVER_ID', '').replace('_', '\_') # server identification in case you have multiple servers
+
 monitor_interval = int(os.getenv('MON_INTRVL', 10)) # in seconds
 packet_loss_threshold = int(os.getenv('PL_THRES', 90)) # % of total packet loss
 packet_loss_weight_cm = float(os.getenv('PL_CM', 1.0)) # weight of CM packet loss
@@ -25,9 +26,11 @@ load_notify_threshold = int(os.getenv('LN_THRES', 6)) # how many times the serve
 offline_notify_threshold = int(os.getenv('ON_THRES', 6)) # how many times the server name appears in list
 log_level = os.getenv('LOG_LVL', 'ERROR').upper() # log level
 lang_uage = os.getenv('LANG_UAGE', 'ZH') # language
+
 stats_json = '/ServerStatus/json/stats.json' # stats.json from server status
 log_file = '/ServerStatus/log/server-monitor.log' # log file location
 stash_json = '/ServerStatus/json/interrupt.json' # stash current lists when monitor is killed
+
 logging.basicConfig(filename=log_file, 
                     level=log_level, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
@@ -120,7 +123,7 @@ while True:
                     offline.append(server['name'])
                     logging.info(f"New offline server: {server['name']}")
             elif isonline is True:
-                isfree = (server['ping_10010']*packet_loss_weight_cu + server['ping_189']*packet_loss_weight_ct + server['ping_10086'])*packet_loss_weight_cm < packet_loss_threshold
+                isfree = (server['ping_10010'] * packet_loss_weight_cu + server['ping_189'] * packet_loss_weight_ct + server['ping_10086']) * packet_loss_weight_cm < packet_loss_threshold
                 load = server['load_15']
                 if server['name'] in offline:
                     offline = list(filter((server['name']).__ne__, offline))
