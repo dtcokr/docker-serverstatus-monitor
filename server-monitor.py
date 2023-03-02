@@ -126,7 +126,8 @@ while True:
                 isfree = (server['ping_10010'] * packet_loss_weight_cu + server['ping_189'] * packet_loss_weight_ct + server['ping_10086']) * packet_loss_weight_cm < packet_loss_threshold
                 load = server['load_15']
                 if server['name'] in offline:
-                    offline = list(filter((server['name']).__ne__, offline))
+                    # offline = list(filter((server['name']).__ne__, offline))
+                    offline.remove(server['name'])
                     logging.info(f"Remove offline server: {server['name']}")
                     if load > load_threshold and server['name'] not in load_wl:
                         if highload.count(server['name']) < load_notify_threshold:
@@ -134,7 +135,8 @@ while True:
                             logging.info(f"New high load server: {server['name']}, load {load}")
                     elif load < load_threshold:
                         if server['name'] in highload:
-                            highload = list(filter((server['name']).__ne__, highload))
+                            # highload = list(filter((server['name']).__ne__, highload))
+                            highload.remove(server['name'])
                             logging.info(f"Remove high load server: {server['name']}, load {load}")
                 elif isfree is False:
                     if blocked.count(server['name']) < block_notify_threshold:
@@ -146,11 +148,13 @@ while True:
                             logging.info(f"New high load server: {server['name']}, load {load}")
                     elif load < load_threshold:
                         if server['name'] in highload:
-                            highload = list(filter((server['name']).__ne__, highload))
+                            # highload = list(filter((server['name']).__ne__, highload))
+                            highload.remove(server['name'])
                             logging.info(f"Remove high load server: {server['name']}, load {load}")
                 elif isfree is True:
                     if server['name'] in blocked:
-                        blocked = list(filter((server['name']).__ne__, blocked))
+                        # blocked = list(filter((server['name']).__ne__, blocked))
+                        blocked.remove(server['name'])
                         logging.info(f"Remove blocked server: {server['name']}")
                         if load > load_threshold and server['name'] not in load_wl:
                             if highload.count(server['name']) < load_notify_threshold:
@@ -158,7 +162,8 @@ while True:
                                 logging.info(f"New high load server: {server['name']}, load {load}")
                         elif load < load_threshold:
                             if server['name'] in highload:
-                                highload = list(filter((server['name']).__ne__, highload))
+                                # highload = list(filter((server['name']).__ne__, highload))
+                                highload.remove(server['name'])
                                 logging.info(f"Remove high load server: {server['name']}, load {load}")
                     elif load > load_threshold and server['name'] not in load_wl:
                         if highload.count(server['name']) < load_notify_threshold:
@@ -166,7 +171,8 @@ while True:
                             logging.info(f"New high load server: {server['name']}, load {load}")
                     elif load < load_threshold:
                         if server['name'] in highload:
-                            highload = list(filter((server['name']).__ne__, highload))
+                            # highload = list(filter((server['name']).__ne__, highload))
+                            highload.remove(server['name'])
                             logging.info(f"Remove high load server: {server['name']}, load {load}")
                             
         ## notification
