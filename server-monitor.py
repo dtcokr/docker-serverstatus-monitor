@@ -30,6 +30,7 @@ lang_uage = os.getenv('LANG_UAGE', 'ZH') # language
 
 stats_json = '/ServerStatus/json/stats.json' # stats.json from server status
 log_file = '/ServerStatus/log/server-monitor.log' # log file location
+configJson = '/ServerStatus/server/config.json' # server config.json file location
 stash_json = '/ServerStatus/json/interrupt.json' # stash current lists when monitor is killed
 
 logging.basicConfig(filename=log_file, 
@@ -104,8 +105,8 @@ def _tgapi_call(text):
             break
 
 ## function to read default/custom threshold
-def _readThreshold(statsJson):
-    with open(statsJson, 'r') as statsJsonRead:
+def _readThreshold(configJson):
+    with open(configJson, 'r') as statsJsonRead:
         stats2Dict = json.load(statsJsonRead)
     
     thresholdDict = {}
@@ -145,9 +146,9 @@ def _readThreshold(statsJson):
         else:
             pl_cu = packet_loss_weight_cu
 
-        sl_thresMatch = re.findall(sl_thresPattern, serverHost)
+        sl_thresMatch = re.search(sl_thresPattern, serverHost)
         if sl_thresMatch:
-            sl_thres = float(sl_thresMatch[0])
+            sl_thres = float(sl_thresMatch.group(1))
         else:
             sl_thres = load_threshold
 
@@ -165,7 +166,7 @@ def _readThreshold(statsJson):
 
 ## monitor starts
 logging.info('Server monitor started.')
-thresholdDict = _readThreshold(stats_json)
+thresholdDict = _readThreshold(configJson)
 if lang_uage == 'EN':
     text = f'#ServerStatus {server_id}\nServer monitor started.'
     _tgapi_call(text)
