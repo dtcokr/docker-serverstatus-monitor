@@ -105,24 +105,25 @@ services:
 
 ```json
 {
-	"servers":
-		[
-			{
-				"username": "name1",
-				"name": "server1",
-				"type": "na",
-				"host": "PL_THRES70,PL_CM0.2,PL_CT0.2,PL_CU0.6,SL_THRES10,DU_THRES85", #在这里设置，多个设置项用逗号(,)分隔
-				"location": "na",
-				"password": "passwd1"
-			},
-			{
-				"username": "name2",
-				"name": "server2",
-				"type": "na",
-				"host": "SL_THRES32", #在这里设置
-				"location": "na",
-				"password": "passwd2"
-			}
+    "servers":
+    [
+        {
+            "username": "name1",
+            "name": "server1",
+            "type": "na",
+            "host": "PL_THRES70,PL_CM0.2,PL_CT0.2,PL_CU0.6,SL_THRES10,DU_THRES85", #在这里设置，多个设置项用逗号(,)分隔
+            "location": "na",
+            "password": "passwd1"
+        },
+        {
+            "username": "name2",
+            "name": "server2",
+            "type": "na",
+            "host": "SL_THRES32", #在这里设置
+            "location": "na",
+            "password": "passwd2"
+        }
+    ]
 }
 ```
 
