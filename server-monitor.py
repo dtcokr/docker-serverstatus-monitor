@@ -16,12 +16,12 @@ account_id = int(os.getenv('ACC_ID')) # telegram id
 server_id = os.getenv('SERVER_ID', '').replace('_', '\_') # server identification in case you have multiple servers
 
 monitor_interval = int(os.getenv('MON_INTRVL', 10)) # in seconds
-packet_loss_threshold = int(os.getenv('PL_THRES', 90)) # % of total packet loss
+packet_loss_threshold = float(os.getenv('PL_THRES', 90.0)) # % of total packet loss
 packet_loss_weight_cm = float(os.getenv('PL_CM', 1.0)) # weight of CM packet loss
 packet_loss_weight_ct = float(os.getenv('PL_CT', 1.0)) # weight of CT packet loss
 packet_loss_weight_cu = float(os.getenv('PL_CU', 1.0)) # weight of CU packet loss
 load_threshold = float(os.getenv('SL_THRES')) # 15 min load
-disk_threshold = int(os.getenv('DU_THRES')) # % of disk usage
+disk_threshold = float(os.getenv('DU_THRES')) # % of disk usage
 block_notify_threshold = int(os.getenv('BN_THRES', 6)) # how many times the server name appears in list
 load_notify_threshold = int(os.getenv('LN_THRES', 6)) # how many times the server name appears in list
 offline_notify_threshold = int(os.getenv('ON_THRES', 6)) # how many times the server name appears in list
@@ -124,7 +124,7 @@ def _readThreshold(configJson):
         
         pl_thresMatch = re.search(pl_thresPattern, serverHost)
         if pl_thresMatch:
-            pl_thres = int(pl_thresMatch.group(1))
+            pl_thres = float(pl_thresMatch.group(1))
         else:
             pl_thres = packet_loss_threshold
             
@@ -154,7 +154,7 @@ def _readThreshold(configJson):
 
         du_thresMatch = re.search(du_thresPattern, serverHost)
         if du_thresMatch:
-            du_thres = int(du_thresMatch.group(1))
+            du_thres = float(du_thresMatch.group(1))
         else:
             du_thres = disk_threshold
             
