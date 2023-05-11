@@ -109,12 +109,12 @@ def _readThreshold(statsJson):
         stats2Dict = json.load(statsJsonRead)
     
     thresholdDict = {}
-    pl_thresPattern = r'(PL_THRES)(\d+\.?\d*)'
-    pl_cmPattern = r'(PL_CM)(\d\.?\d*)'
-    pl_ctPattern = r'(PL_CT)(\d\.?\d*)'
-    pl_cuPattern = r'(PL_CU)(\d\.?\d*)'
-    sl_thresPattern = r'(SL_THRES)(\d\.?\d*)'
-    du_thresPattern = r'(DU_THRES)(\d\.?\d*)'
+    pl_thresPattern = r'PL_THRES(\d+\.?\d*)'
+    pl_cmPattern = r'PL_CM(\d\.?\d*)'
+    pl_ctPattern = r'PL_CT(\d\.?\d*)'
+    pl_cuPattern = r'PL_CU(\d\.?\d*)'
+    sl_thresPattern = r'SL_THRES(\d\.?\d*)'
+    du_thresPattern = r'DU_THRES(\d\.?\d*)'
     
     for server in stats2Dict['servers']:
         
@@ -123,37 +123,37 @@ def _readThreshold(statsJson):
         
         pl_thresMatch = re.search(pl_thresPattern, serverHost)
         if pl_thresMatch:
-            pl_thres = pl_thresMatch.group(1)
+            pl_thres = int(pl_thresMatch.group(1))
         else:
             pl_thres = packet_loss_threshold
             
         pl_cmMatch = re.search(pl_cmPattern, serverHost)
         if pl_cmMatch:
-            pl_cm = pl_cmMatch.group(1)
+            pl_cm = float(pl_cmMatch.group(1))
         else:
             pl_cm = packet_loss_weight_cm
             
         pl_ctMatch = re.search(pl_ctPattern, serverHost)
         if pl_ctMatch:
-            pl_ct = pl_ctMatch.group(1)
+            pl_ct = float(pl_ctMatch.group(1))
         else:
             pl_ct = packet_loss_weight_ct
 
         pl_cuMatch = re.search(pl_cuPattern, serverHost)
         if pl_cuMatch:
-            pl_cu = pl_cuMatch.group(1)
+            pl_cu = float(pl_cuMatch.group(1))
         else:
             pl_cu = packet_loss_weight_cu
 
         sl_thresMatch = re.search(sl_thresPattern, serverHost)
         if sl_thresMatch:
-            sl_thres = sl_thresMatch.group(1)
+            sl_thres = float(sl_thresMatch.group(1))
         else:
             sl_thres = load_threshold
 
         du_thresMatch = re.search(du_thresPattern, serverHost)
         if du_thresMatch:
-            du_thres = du_thresMatch.group(1)
+            du_thres = int(du_thresMatch.group(1))
         else:
             du_thres = disk_threshold
             
