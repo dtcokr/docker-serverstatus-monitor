@@ -109,12 +109,12 @@ def _readThreshold(statsJson):
         stats2Dict = json.load(statsJsonRead)
     
     thresholdDict = {}
-    pl_thresPattern = r'PL_THRES(\d+\.?\d*)'
-    pl_cmPattern = r'PL_CM(\d\.?\d*)'
-    pl_ctPattern = r'PL_CT(\d\.?\d*)'
-    pl_cuPattern = r'PL_CU(\d\.?\d*)'
-    sl_thresPattern = r'SL_THRES(\d\.?\d*)'
-    du_thresPattern = r'DU_THRES(\d\.?\d*)'
+    pl_thresPattern = r'(PL_THRES)(\d+\.?\d*)'
+    pl_cmPattern = r'(PL_CM)(\d\.?\d*)'
+    pl_ctPattern = r'(PL_CT)(\d\.?\d*)'
+    pl_cuPattern = r'(PL_CU)(\d\.?\d*)'
+    sl_thresPattern = r'(SL_THRES)(\d\.?\d*)'
+    du_thresPattern = r'(DU_THRES)(\d\.?\d*)'
     
     for server in stats2Dict['servers']:
         
