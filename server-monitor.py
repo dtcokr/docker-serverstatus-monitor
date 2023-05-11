@@ -7,6 +7,7 @@ import requests
 import logging
 import os
 import signal
+import re
 
 
 ## preferences
@@ -102,8 +103,68 @@ def _tgapi_call(text):
         else:
             break
 
+## function to read default/custom threshold
+def _readThreshold(statsJson):
+    with open(statsJson, 'r') as statsJsonRead:
+        stats2Dict = json.load(statsJsonRead)
+    
+    thresholdJson = {}
+    pl_thresPattern = r'PL_THRES\d+\.?\d*'
+    pl_cmPattern = r'PL_CM\d+\.?\d*'
+    pl_ctPattern = r'PL_CT\d+\.?\d*'
+    pl_cuPattern = r'PL_CU\d+\.?\d*'
+    sl_thresPattern = r'SL_THRES\d+\.?\d*'
+    du_thresPattern = r'DU_THRES\d+\.?\d*'
+    
+    for server in stats2Dict['servers']:
+        
+        serverName = server['name']
+        serverHost = server['host']
+        
+        pl_thresMatch = re.search(pl_thresPattern, serverHost)
+        if pl_thresMatch:
+            pl_thres = pl_thresMatch.group(1)
+        else:
+            pl_thres = packet_loss_threshold
+            
+        pl_cmMatch = re.search(pl_cmPattern, serverHost)
+        if pl_cmMatch:
+            pl_cm = pl_cmMatch.group(1)
+        else:
+            pl_cm = packet_loss_weight_cm
+            
+        pl_ctMatch = re.search(pl_ctPattern, serverHost)
+        if pl_ctMatch:
+            pl_ct = pl_ctMatch.group(1)
+        else:
+            pl_ct = packet_loss_weight_ct
+
+        pl_cuMatch = re.search(pl_cuPattern, serverHost)
+        if pl_cuMatch:
+            pl_cu = pl_cuMatch.group(1)
+        else:
+            pl_cu = packet_loss_weight_cu
+
+        sl_thresMatch = re.search(sl_thresPattern, serverHost)
+        if sl_thresMatch:
+            sl_thres = sl_thresMatch.group(1)
+        else:
+            sl_thres = load_threshold
+
+        du_thresMatch = re.search(du_thresPattern, serverHost)
+        if du_thresMatch:
+            du_thres = du_thresMatch.group(1)
+        else:
+            du_thres = disk_threshold
+            
+        thresholdJson[serverName] = {"PL_THRES": pl_thres, "PL_CM": pl_cm, "PL_CT": pl_ct, "PL_CU": pl_cu, "SL_THRES": sl_thres, "DU_THRES": du_thres}
+    
+    logging.debug(f'thresholdJson: {thresholdJson}')
+    return thresholdJson
+
 ## monitor starts
 logging.info('Server monitor started.')
+thresholdJson = _readThreshold(stats_json)
 if lang_uage == 'EN':
     text = f'#ServerStatus {server_id}\nServer monitor started.'
     _tgapi_call(text)
