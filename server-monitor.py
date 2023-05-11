@@ -325,6 +325,8 @@ while True:
         
     except KeyboardInterrupt:
         print("\n**\nManually stopped\n**.")
+        text=f'#ServerStatus {server_id}\nServer monitor manually stopped.'
+        _tgapi_call(text)
         logging.info('Manually stopped')
         _stash(offline, blocked, highload, diskfull, olnotify, bknotify, hlnotify, dfnotify, stash_json)
         break
