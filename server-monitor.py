@@ -160,6 +160,7 @@ def _readThreshold(statsJson):
         thresholdDict[serverName] = {"PL_THRES": pl_thres, "PL_CM": pl_cm, "PL_CT": pl_ct, "PL_CU": pl_cu, "SL_THRES": sl_thres, "DU_THRES": du_thres}
     
     logging.debug(f'thresholdDict: {thresholdDict}')
+    logging.debug(f'stats2Dict: {stats2Dict}')
     return thresholdDict
 
 ## monitor starts
