@@ -145,9 +145,9 @@ def _readThreshold(statsJson):
         else:
             pl_cu = packet_loss_weight_cu
 
-        sl_thresMatch = re.search(sl_thresPattern, serverHost)
+        sl_thresMatch = re.findall(sl_thresPattern, serverHost)
         if sl_thresMatch:
-            sl_thres = float(sl_thresMatch.group(1))
+            sl_thres = float(sl_thresMatch[0])
         else:
             sl_thres = load_threshold
 
