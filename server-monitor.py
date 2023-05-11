@@ -108,7 +108,7 @@ def _readThreshold(statsJson):
     with open(statsJson, 'r') as statsJsonRead:
         stats2Dict = json.load(statsJsonRead)
     
-    thresholdJson = {}
+    thresholdDict = {}
     pl_thresPattern = r'PL_THRES\d+\.?\d*'
     pl_cmPattern = r'PL_CM\d+\.?\d*'
     pl_ctPattern = r'PL_CT\d+\.?\d*'
@@ -157,14 +157,14 @@ def _readThreshold(statsJson):
         else:
             du_thres = disk_threshold
             
-        thresholdJson[serverName] = {"PL_THRES": pl_thres, "PL_CM": pl_cm, "PL_CT": pl_ct, "PL_CU": pl_cu, "SL_THRES": sl_thres, "DU_THRES": du_thres}
+        thresholdDict[serverName] = {"PL_THRES": pl_thres, "PL_CM": pl_cm, "PL_CT": pl_ct, "PL_CU": pl_cu, "SL_THRES": sl_thres, "DU_THRES": du_thres}
     
-    logging.debug(f'thresholdJson: {thresholdJson}')
-    return thresholdJson
+    logging.debug(f'thresholdDict: {thresholdDict}')
+    return thresholdDict
 
 ## monitor starts
 logging.info('Server monitor started.')
-thresholdJson = _readThreshold(stats_json)
+thresholdDict = _readThreshold(stats_json)
 if lang_uage == 'EN':
     text = f'#ServerStatus {server_id}\nServer monitor started.'
     _tgapi_call(text)
