@@ -111,7 +111,7 @@ services:
             "username": "name1",
             "name": "server1",
             "type": "na",
-            "host": "PL_THRES70,PL_CM0.2,PL_CT0.2,PL_CU0.6,SL_THRES10,DU_THRES85", #在这里设置，多个设置项用逗号(,)分隔
+            "host": "PL_THRES70,PL_CM1.2,PL_CT1.2,PL_CU0.6,SL_THRES10,DU_THRES85", #在这里设置，多个设置项用逗号(,)分隔
             "location": "na",
             "password": "passwd1"
         },
