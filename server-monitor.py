@@ -327,6 +327,8 @@ while True:
                     logging.info(f"Disk full server notified: {server['name']}")
                 # elif (server['hdd_used'] / (server['hdd_total'] if server['hdd_total'] != 0 else 1e16) < disk_threshold/100) and (server['name'] in dfnotify):
                 elif (server['hdd_used'] / (server['hdd_total'] if server['hdd_total'] != 0 else 1e16) < thresholdDict[server['name']]['DU_THRES']/100) and (server['name'] in dfnotify):
+                    text = f"Disk usage of *{server['name']}* is lower than {thresholdDict[server['name']]['DU_THRES']}%.\nUsage: {round(server['hdd_used']/1024, 2)}/{round(server['hdd_total']/1024, 2)} GB"
+                    _tgapi_call(text)
                     dfnotify = list(filter((server['name']).__ne__, dfnotify))
                     logging.info(f"Disk usage of *{server['name']}* is lower.")
 
