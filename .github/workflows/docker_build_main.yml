@@ -6,6 +6,8 @@ on:
       - 'main'
     paths-ignore:
       - '.github/workflows/**'
+      - 'README.md'
+      - 'README_EN.md'
   workflow_dispatch:
 
 jobs:
