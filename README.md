@@ -15,6 +15,19 @@
 
 ## 使用
 
+文件夹结构
+
+```
+/path/to/ServerStatus
+.
+├── json
+│   └── stats.json
+├── log
+│   └── server-monitor.log
+└── server
+    └── config.json
+```
+
 ### CLI
 
 ```bash
