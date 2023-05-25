@@ -164,7 +164,7 @@ def _readThreshold(configJson):
     logging.debug(f'stats2Dict: {stats2Dict}')
     return thresholdDict
 
-## monitor starts
+## monitor loop starts here
 logging.info('Server monitor started.')
 thresholdDict = _readThreshold(configJson)
 if lang_uage == 'EN':
