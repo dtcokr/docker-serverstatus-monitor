@@ -180,7 +180,7 @@ while True:
         with open(stats_json, 'r', encoding='utf-8') as f:
             js = json.load(f)
         for server in js['servers']:
-            isonline = server['online4']
+            isonline = server['online4'] or server['online6']
             if isonline is False:
                 if offline.count(server['name']) < offline_notify_threshold:
                     offline.append(server['name'])
@@ -310,7 +310,7 @@ while True:
                     
         ## disk usage data gathering & notification
         for server in js['servers']:
-            isonline = server['online4']
+            isonline = server['online4'] or server['online6']
             if isonline is True:
                 # if (server['hdd_used'] / (server['hdd_total'] if server['hdd_total'] != 0 else 1e16) >= disk_threshold/100) and (server['name'] not in dfnotify):
                 if (server['hdd_used'] / (server['hdd_total'] if server['hdd_total'] != 0 else 1e16) >= thresholdDict[server['name']]['DU_THRES']/100) and (server['name'] not in dfnotify):
