@@ -52,24 +52,24 @@ logging.basicConfig(filename=log_file,
 if os.path.isfile(stash_json):
     with open(stash_json, 'r') as f_read:
         j2dict = json.load(f_read)
-        
-    offline = j2dict['offline']
-    blocked = j2dict['blocked']
-    highload = j2dict['highload']
-    diskfull = j2dict['diskfull']
-    tcptoomany = j2dict['tcptoomany']
-    badcu = j2dict['badcu']
-    badct = j2dict['badct']
-    badcm = j2dict['badcm']
+    
+    offline = j2dict.get('offline', [])
+    blocked = j2dict.get('blocked', [])
+    highload = j2dict.get('highload', [])
+    diskfull = j2dict.get('diskfull', [])
+    tcptoomany = j2dict.get('tcptoomany', [])
+    badcu = j2dict.get('badcu', [])
+    badct = j2dict.get('badct', [])
+    badcm = j2dict.get('badcm', [])
 
-    olnotify = j2dict['olnotify']
-    bknotify = j2dict['bknotify']
-    hlnotify = j2dict['hlnotify']
-    dfnotify = j2dict['dfnotify']
-    tcpnotify = j2dict['tcpnotify']
-    badcunotify = j2dict['badcunotify']
-    badctnotify = j2dict['badctnotify']
-    badcmnotify = j2dict['badcmnotify']
+    olnotify = j2dict.get('olnotify', [])
+    bknotify = j2dict.get('bknotify', [])
+    hlnotify = j2dict.get('hlnotify', [])
+    dfnotify = j2dict.get('dfnotify', [])
+    tcpnotify = j2dict.get('tcpnotify', [])
+    badcunotify = j2dict.get('badcunotify', [])
+    badctnotify = j2dict.get('badctnotify', [])
+    badcmnotify = j2dict.get('badcmnotify', [])
 
     os.remove(stash_json)
 else:
