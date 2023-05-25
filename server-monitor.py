@@ -21,7 +21,7 @@ packet_loss_weight_cm = float(os.getenv('PL_CM', 30.0)) # weight of CM packet lo
 packet_loss_weight_ct = float(os.getenv('PL_CT', 30.0)) # weight of CT packet loss
 packet_loss_weight_cu = float(os.getenv('PL_CU', 30.0)) # weight of CU packet loss
 
-tcp_threshold = int(os.getenv('TCP_THRES', 300)) # tcp count
+tcp_threshold = float(os.getenv('TCP_THRES', 300.0)) # tcp count
 load_threshold = float(os.getenv('SL_THRES')) # 15 min load
 disk_threshold = float(os.getenv('DU_THRES')) # % of disk usage
 
@@ -189,7 +189,7 @@ def _readThreshold(configJson):
 
         tcp_thresMatch = re.search(tcp_thresPattern, serverHost)
         if tcp_thresMatch:
-            tcp_thres = int(tcp_thresMatch.group(1))
+            tcp_thres = float(tcp_thresMatch.group(1))
         else:
             tcp_thres = tcp_threshold
             
@@ -228,7 +228,7 @@ while True:
             elif isonline is True:
                 ## isfree is True means server is not blocked by CU and CT and CM
                 ## isGood is True means server successful ping to CU, CT, CM is good
-                isfree = (server['ping_10010'] + server['ping_189'] + server['ping_10086']) < 300
+                isfree = (server['ping_10010'] + server['ping_189'] + server['ping_10086']) < 300.0
                 ## using 15-min-avg load as current load reading
                 load = server['load_15']
                 isgoodload = load < thresholdDict[serverName]['SL_THRES']
