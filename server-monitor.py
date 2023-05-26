@@ -253,7 +253,7 @@ while True:
                     logging.info(f"Remove offline server: {serverName}")
                 
                 ## if server load >= threshold and not reach notify threshold, add it to highload list
-                if (not isgoodload) and (highload.count(serverName) < load_notify_threshold):
+                if (not isgoodload) and (highload.count(serverName) > load_notify_threshold):
                     highload.append(serverName)
                     logging.info(f"Add high load server: {serverName}, load {load}")
                 ## else if server load < threshold and previously in highload list, remove it
