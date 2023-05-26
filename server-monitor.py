@@ -505,6 +505,7 @@ while True:
         logging.info('Manually stopped')
         _stash(stash_json)
         break
+
     except Exception as e:
         if lang_uage == 'EN':
             text = f'#ServerStatus {server_id}\nServer monitor has an error, please check log.'
@@ -515,5 +516,5 @@ while True:
         logging.error(f'Server monitor killed by an error.\n\n{e}')
         traceback.print_exc()
         _stash(stash_json)
-        break
+        # break
 
