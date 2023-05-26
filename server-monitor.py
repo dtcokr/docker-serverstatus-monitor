@@ -307,7 +307,7 @@ while True:
                     logging.info(f"Remove bad ct server: {serverName}")
                 
                 ## if server successful ping to CM >= threshold and not reach notify threshold, add it to badcm list
-                if (not isgoodcm) and (badcm.count(serverName) < badcm_notify_threshold):
+                if (not isgoodcm) and (badcm.count(serverName) > badcm_notify_threshold):
                     badcm.append(serverName)
                     logging.info(f"Add bad cm server: {serverName}")
                 ## else if server is not bad cm and previously in badcm list, remove it
