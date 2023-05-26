@@ -375,20 +375,20 @@ while True:
             ## if server reaches disk full notify threshold and not notified yet, notify and add it to notified list
             if (diskfull.count(serverName) >= diskfull_notify_threshold) and (serverName not in dfnotify):
                 if lang_uage == 'EN':
-                    text = f"#ServerStatus {server_id}\nDisk usage of #{serverName} *reached* {thresholdDict[serverName]['DU_THRES']}%.\nUsage: {round(server['hdd_used']/1024, 2)}/{round(server['hdd_total']/1024, 2)} GB"
+                    text = f"#ServerStatus {server_id}\nDisk usage of #{serverName} *reached* {thresholdDict[serverName]['DU_THRES']}%.\nUsage: {round(server['hdd_used']/1024, 2)}/{round(server['hdd_total']/1024, 2)} GB, {round((float(server['hdd_used']) / (server['hdd_total'] if server['hdd_total'] != 0 else 1e16)) * 100, 2)} %"
                     _tgapi_call(text)
                 else:
-                    text = f"#ServerStatus {server_id}\n#{serverName} 磁盘使用率已达到 *{thresholdDict[serverName]['DU_THRES']}%*.\n使用量: {round(server['hdd_used']/1024, 2)}/{round(server['hdd_total']/1024, 2)} GB"
+                    text = f"#ServerStatus {server_id}\n#{serverName} 磁盘使用率已达到 *{thresholdDict[serverName]['DU_THRES']}%*.\n使用量: {round(server['hdd_used']/1024, 2)}/{round(server['hdd_total']/1024, 2)} GB, {round((float(server['hdd_used']) / (server['hdd_total'] if server['hdd_total'] != 0 else 1e16)) * 100, 2)} %"
                     _tgapi_call(text)
                 dfnotify.append(serverName)
                 logging.info(f"Disk full server notified: {serverName}")
             ## else if server disk is not full and previously notified because of disk full, notify and remove it from disk full notify list
             elif (serverName not in diskfull) and (serverName in dfnotify):
                 if lang_uage == 'EN':
-                    text = f"#ServerStatus {server_id}\nDisk usage of #{serverName} is *lower* than {thresholdDict[serverName]['DU_THRES']}%.\nUsage: {round(server['hdd_used']/1024, 2)}/{round(server['hdd_total']/1024, 2)} GB"
+                    text = f"#ServerStatus {server_id}\nDisk usage of #{serverName} is *lower* than {thresholdDict[serverName]['DU_THRES']}%.\nUsage: {round(server['hdd_used']/1024, 2)}/{round(server['hdd_total']/1024, 2)} GB, {round((float(server['hdd_used']) / (server['hdd_total'] if server['hdd_total'] != 0 else 1e16)) * 100, 2)} %"
                     _tgapi_call(text)
                 else:
-                    text = f"#ServerStatus {server_id}\n#{serverName} 磁盘用量 *低于* {thresholdDict[serverName]['DU_THRES']}%.\n用量: {round(server['hdd_used']/1024, 2)}/{round(server['hdd_total']/1024, 2)} GB"
+                    text = f"#ServerStatus {server_id}\n#{serverName} 磁盘用量 *低于* {thresholdDict[serverName]['DU_THRES']}%.\n用量: {round(server['hdd_used']/1024, 2)}/{round(server['hdd_total']/1024, 2)} GB, {round((float(server['hdd_used']) / (server['hdd_total'] if server['hdd_total'] != 0 else 1e16)) * 100, 2)} %"
                     _tgapi_call(text)
                 dfnotify = list(filter((serverName).__ne__, dfnotify))
                 logging.info(f"Disk usage of *{serverName}* is lower.")
