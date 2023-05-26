@@ -8,6 +8,7 @@ import logging
 import os
 import signal
 import re
+import traceback
 
 
 ## preferences
@@ -504,14 +505,15 @@ while True:
         logging.info('Manually stopped')
         _stash(stash_json)
         break
-    # except Exception as e:
-    #     if lang_uage == 'EN':
-    #         text = f'#ServerStatus {server_id}\nServer monitor has an error, please check log.'
-    #         _tgapi_call(text)
-    #     elif lang_uage == 'ZH':
-    #         text = f'#ServerStatus {server_id}\n服务器监视器遇到问题，请查看日志。'
-    #         _tgapi_call(text)
-    #     logging.error(f'Server monitor killed by an error.\n\n{e}')
-    #     _stash(stash_json)
-    #     break
+    except Exception as e:
+        if lang_uage == 'EN':
+            text = f'#ServerStatus {server_id}\nServer monitor has an error, please check log.'
+            _tgapi_call(text)
+        elif lang_uage == 'ZH':
+            text = f'#ServerStatus {server_id}\n服务器监视器遇到问题，请查看日志。'
+            _tgapi_call(text)
+        logging.error(f'Server monitor killed by an error.\n\n{e}')
+        traceback.print_exc()
+        _stash(stash_json)
+        break
 
