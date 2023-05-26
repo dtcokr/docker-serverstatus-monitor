@@ -239,7 +239,7 @@ while True:
                 isfree = (server['ping_10010'] + server['ping_189'] + server['ping_10086']) > 300.0
                 ## using 15-min-avg load as current load reading
                 load = server['load_15']
-                isgoodload = load < thresholdDict[serverName]['SL_THRES']
+                isgoodload = load > thresholdDict[serverName]['SL_THRES']
                 logging.debug(type(thresholdDict[serverName]['SL_THRES']))
                 isgooddisk = server['hdd_used'] / (server['hdd_total'] if server['hdd_total'] != 0 else 1e16) < thresholdDict[serverName]['DU_THRES']/100.0
                 isgoodtcp = server['tcp_count'] < thresholdDict[serverName]['TCP_THRES']
