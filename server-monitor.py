@@ -33,6 +33,14 @@ load_notify_threshold = int(os.getenv('LN_THRES', 6)) # how many times the serve
 offline_notify_threshold = int(os.getenv('ON_THRES', 6)) # how many times the server name appears offline in list
 diskfull_notify_threshold = int(os.getenv('DN_THRES', 6)) # how many times the server name appears disk usage in list
 tcpcount_notify_threshold = int(os.getenv('TN_THRES', 6)) # how many times the server name appears tcp count in list
+logging.debug(type(block_notify_threshold))
+logging.debug(type(badcu_notify_threshold))
+logging.debug(type(badct_notify_threshold))
+logging.debug(type(badcm_notify_threshold))
+logging.debug(type(load_notify_threshold))
+logging.debug(type(offline_notify_threshold))
+logging.debug(type(diskfull_notify_threshold))
+logging.debug(type(tcpcount_notify_threshold))
 
 log_level = os.getenv('LOG_LVL', 'ERROR').upper() # log level
 
@@ -220,9 +228,8 @@ while True:
             isonline = server['online4'] or server['online6']
             ## if server is offline(any other data is N/A) and not reach notify threshold, add it to offline list and finish loop
             if (isonline is False) and (offline.count(serverName) < offline_notify_threshold):
-                if offline.count(serverName) < offline_notify_threshold:
-                    offline.append(serverName)
-                    logging.info(f"Add offline server: {serverName}")
+                offline.append(serverName)
+                logging.info(f"Add offline server: {serverName}")
 
             ## if server is online, other data is available
             elif isonline is True:
@@ -232,7 +239,8 @@ while True:
                 ## using 15-min-avg load as current load reading
                 load = server['load_15']
                 isgoodload = load < thresholdDict[serverName]['SL_THRES']
-                isgooddisk = server['hdd_used'] / (server['hdd_total'] if server['hdd_total'] != 0 else 1e16) < thresholdDict[serverName]['DU_THRES']/100
+                logging.debug(type(thresholdDict[serverName]['SL_THRES']))
+                isgooddisk = server['hdd_used'] / (server['hdd_total'] if server['hdd_total'] != 0 else 1e16) < thresholdDict[serverName]['DU_THRES']/100.0
                 isgoodtcp = server['tcp_count'] < thresholdDict[serverName]['TCP_THRES']
                 isgoodcu = server['ping_10010'] < thresholdDict[serverName]['PL_CU']
                 isgoodct = server['ping_189'] < thresholdDict[serverName]['PL_CT']
