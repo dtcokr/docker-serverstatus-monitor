@@ -236,7 +236,7 @@ while True:
             elif isonline is True:
                 ## isfree is True means server is not blocked by CU and CT and CM
                 ## isGood is True means server successful ping to CU, CT, CM is good
-                isfree = (server['ping_10010'] + server['ping_189'] + server['ping_10086']) < 300.0
+                isfree = (server['ping_10010'] + server['ping_189'] + server['ping_10086']) > 300.0
                 ## using 15-min-avg load as current load reading
                 load = server['load_15']
                 isgoodload = load < thresholdDict[serverName]['SL_THRES']
