@@ -289,7 +289,7 @@ while True:
                     logging.info(f"Remove tcptoomany server: {serverName}")
                 
                 ## if server successful ping to CU >= threshold and not reach notify threshold, add it to badcu list
-                if (not isgoodcu) and (badcu.count(serverName) < badcu_notify_threshold):
+                if (not isgoodcu) and (badcu.count(serverName) > badcu_notify_threshold):
                     badcu.append(serverName)
                     logging.info(f"Add bad cu server: {serverName}")
                 ## else if server is not bad cu and previously in badcu list, remove it
