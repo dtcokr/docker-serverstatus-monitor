@@ -308,6 +308,7 @@ while True:
 
         ## notification
         for server in js['servers']:
+            serverName = server['name']
             ## if server reaches offline notify threshold and not notified yet, notify and add it to notified list
             if (offline.count(serverName) >= offline_notify_threshold) and (serverName not in olnotify):
                 if lang_uage == 'EN':
