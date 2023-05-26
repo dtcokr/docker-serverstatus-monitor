@@ -264,7 +264,7 @@ while True:
                     logging.info(f"Remove blocked server: {serverName}")
                     
                 ## if server disk usage >= threshold and not reach notify threshold, add it to diskfull list
-                if (not isgooddisk) and (diskfull.count(serverName < diskfull_notify_threshold)):
+                if (not isgooddisk) and (diskfull.count(serverName) < diskfull_notify_threshold):
                     diskfull.append(serverName)
                     logging.info(f"Add disk full server: {serverName}")
                 ## else if server is not disk full and previously in diskfull list, remove it
