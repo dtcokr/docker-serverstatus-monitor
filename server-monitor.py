@@ -222,6 +222,7 @@ while True:
         ## status gathering
         with open(stats_json, 'r', encoding='utf-8') as f:
             js = json.load(f)
+        logging.debug(js)
         for server in js['servers']:
             serverName = server['name']
             ## ipv4 and/or ipv6 online is considered online
