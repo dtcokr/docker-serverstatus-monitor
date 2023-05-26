@@ -232,7 +232,6 @@ while True:
                 ## using 15-min-avg load as current load reading
                 load = float(server['load_15'])
                 isgoodload = load < thresholdDict[serverName]['SL_THRES']
-                logging.debug(type(thresholdDict[serverName]['SL_THRES']))
                 isgooddisk = float(server['hdd_used']) / (server['hdd_total'] if server['hdd_total'] != 0 else 1e16) < thresholdDict[serverName]['DU_THRES']/100.0
                 isgoodtcp = float(server['tcp_count']) < thresholdDict[serverName]['TCP_THRES']
                 isgoodcu = float(server['ping_10010']) < thresholdDict[serverName]['PL_CU']
