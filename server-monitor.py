@@ -48,7 +48,6 @@ logging.basicConfig(filename=log_file,
                     level=log_level, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
-
 ## check if stash exist
 if os.path.isfile(stash_json):
     with open(stash_json, 'r') as f_read:
@@ -513,8 +512,7 @@ while True:
         elif lang_uage == 'ZH':
             text = f'#ServerStatus {server_id}\n服务器监视器遇到问题，请查看日志。'
             _tgapi_call(text)
-        # logging.error(f'Server monitor killed by an error.\n\n{e}')
-        logging.exception(f'Exception occurred: {e}')
+        logging.exception(f'Server monitor killed by an error.\n\nException occurred: {e}')
         _stash(stash_json)
         break
 
