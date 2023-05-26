@@ -242,7 +242,7 @@ while True:
                 isgoodload = load > thresholdDict[serverName]['SL_THRES']
                 logging.debug(type(thresholdDict[serverName]['SL_THRES']))
                 isgooddisk = server['hdd_used'] / (server['hdd_total'] if server['hdd_total'] != 0 else 1e16) > thresholdDict[serverName]['DU_THRES']/100.0
-                isgoodtcp = server['tcp_count'] < thresholdDict[serverName]['TCP_THRES']
+                isgoodtcp = server['tcp_count'] > thresholdDict[serverName]['TCP_THRES']
                 isgoodcu = server['ping_10010'] < thresholdDict[serverName]['PL_CU']
                 isgoodct = server['ping_189'] < thresholdDict[serverName]['PL_CT']
                 isgoodcm = server['ping_10086'] < thresholdDict[serverName]['PL_CM']
