@@ -280,7 +280,7 @@ while True:
                     logging.info(f"Remove disk full server: {serverName}")
                 
                 ## if server tcp count >= threshold and not reach notify threshold, add it to tcptoomany list
-                if (not isgoodtcp) and (tcptoomany.count(serverName) < tcpcount_notify_threshold):
+                if (not isgoodtcp) and (tcptoomany.count(serverName) > tcpcount_notify_threshold):
                     tcptoomany.append(serverName)
                     logging.info(f"Add tcptoomany server: {serverName}")
                 ## else if server is not too many tcp and previously in toomanytcp list, remove it
