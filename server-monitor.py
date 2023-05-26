@@ -262,7 +262,7 @@ while True:
                     logging.info(f"Remove high load server: {serverName}, load {load}")
                 
                 ## if server is blocked and not reach notify threshold, add it to blocked list
-                if (not isfree) and (blocked.count(serverName) < block_notify_threshold):
+                if (not isfree) and (blocked.count(serverName) > block_notify_threshold):
                     blocked.append(serverName)
                     logging.info(f"Add blocked server: {serverName}")
                 ## else if server is unblocked and previously in blocked list, remove it
