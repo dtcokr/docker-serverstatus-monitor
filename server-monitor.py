@@ -24,7 +24,7 @@ packet_loss_weight_cu = float(os.getenv('PL_CU', 30.0)) # weight of CU packet lo
 
 tcp_threshold = float(os.getenv('TCP_THRES', 300.0)) # tcp count
 load_threshold = float(os.getenv('SL_THRES')) # 15 min load
-disk_threshold = float(os.getenv('DU_THRES')) # % of disk usage
+disk_threshold = float(os.getenv('DU_THRES', 90.0)) # % of disk usage
 
 block_notify_threshold = int(os.getenv('BN_THRES', 6)) # how many times the server name appears in blocked list
 badcu_notify_threshold = int(os.getenv('BCUN_THRES', 6)) # how many times the server name appears in badcu list
