@@ -35,7 +35,7 @@ offline_notify_threshold = int(os.getenv('ON_THRES', 6)) # how many times the se
 diskfull_notify_threshold = int(os.getenv('DN_THRES', 6)) # how many times the server name appears disk usage in list
 tcpcount_notify_threshold = int(os.getenv('TN_THRES', 6)) # how many times the server name appears tcp count in list
 
-log_level = os.getenv('LOG_LVL', 'ERROR').upper() # log level
+log_level = os.getenv('LOG_LVL', 'INFO').upper() # log level
 
 lang_uage = os.getenv('LANG_UAGE', 'ZH') # language
 
