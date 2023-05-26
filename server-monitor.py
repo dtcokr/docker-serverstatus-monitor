@@ -245,7 +245,7 @@ while True:
                 isgoodtcp = server['tcp_count'] > thresholdDict[serverName]['TCP_THRES']
                 isgoodcu = server['ping_10010'] > thresholdDict[serverName]['PL_CU']
                 isgoodct = server['ping_189'] > thresholdDict[serverName]['PL_CT']
-                isgoodcm = server['ping_10086'] < thresholdDict[serverName]['PL_CM']
+                isgoodcm = server['ping_10086'] > thresholdDict[serverName]['PL_CM']
                 
                 ## if server is previously offline and now online, remove it from offline list
                 if serverName in offline:
