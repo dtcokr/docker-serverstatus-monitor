@@ -298,7 +298,7 @@ while True:
                     logging.info(f"Remove bad cu server: {serverName}")
                 
                 ## if server successful ping to CT >= threshold and not reach notify threshold, add it to badct list
-                if (not isgoodct) and (badct.count(serverName) < badct_notify_threshold):
+                if (not isgoodct) and (badct.count(serverName) > badct_notify_threshold):
                     badct.append(serverName)
                     logging.info(f"Add bad ct server: {serverName}")
                 ## else if server is not bad ct and previously in badct list, remove it
