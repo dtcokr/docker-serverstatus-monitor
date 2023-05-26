@@ -228,7 +228,7 @@ while True:
             ## ipv4 and/or ipv6 online is considered online
             isonline = server['online4'] or server['online6']
             ## if server is offline(any other data is N/A) and not reach notify threshold, add it to offline list and finish loop
-            if (isonline is False) and (offline.count(serverName) < offline_notify_threshold):
+            if (isonline is False) and (offline.count(serverName) > offline_notify_threshold):
                 offline.append(serverName)
                 logging.info(f"Add offline server: {serverName}")
 
