@@ -33,14 +33,6 @@ load_notify_threshold = int(os.getenv('LN_THRES', 6)) # how many times the serve
 offline_notify_threshold = int(os.getenv('ON_THRES', 6)) # how many times the server name appears offline in list
 diskfull_notify_threshold = int(os.getenv('DN_THRES', 6)) # how many times the server name appears disk usage in list
 tcpcount_notify_threshold = int(os.getenv('TN_THRES', 6)) # how many times the server name appears tcp count in list
-logging.debug(type(block_notify_threshold))
-logging.debug(type(badcu_notify_threshold))
-logging.debug(type(badct_notify_threshold))
-logging.debug(type(badcm_notify_threshold))
-logging.debug(type(load_notify_threshold))
-logging.debug(type(offline_notify_threshold))
-logging.debug(type(diskfull_notify_threshold))
-logging.debug(type(tcpcount_notify_threshold))
 
 log_level = os.getenv('LOG_LVL', 'ERROR').upper() # log level
 
@@ -228,7 +220,7 @@ while True:
             ## ipv4 and/or ipv6 online is considered online
             isonline = server['online4'] or server['online6']
             ## if server is offline(any other data is N/A) and not reach notify threshold, add it to offline list and finish loop
-            if (isonline is False) and (offline.count(serverName) > offline_notify_threshold):
+            if (isonline is False) and (offline.count(serverName) < offline_notify_threshold):
                 offline.append(serverName)
                 logging.info(f"Add offline server: {serverName}")
 
@@ -236,16 +228,16 @@ while True:
             elif isonline is True:
                 ## isfree is True means server is not blocked by CU and CT and CM
                 ## isGood is True means server successful ping to CU, CT, CM is good
-                isfree = (server['ping_10010'] + server['ping_189'] + server['ping_10086']) > 300.0
+                isfree = float(server['ping_10010'] + server['ping_189'] + server['ping_10086']) < 300.0
                 ## using 15-min-avg load as current load reading
-                load = server['load_15']
-                isgoodload = load > thresholdDict[serverName]['SL_THRES']
+                load = float(server['load_15'])
+                isgoodload = load < thresholdDict[serverName]['SL_THRES']
                 logging.debug(type(thresholdDict[serverName]['SL_THRES']))
-                isgooddisk = server['hdd_used'] / (server['hdd_total'] if server['hdd_total'] != 0 else 1e16) > thresholdDict[serverName]['DU_THRES']/100.0
-                isgoodtcp = server['tcp_count'] > thresholdDict[serverName]['TCP_THRES']
-                isgoodcu = server['ping_10010'] > thresholdDict[serverName]['PL_CU']
-                isgoodct = server['ping_189'] > thresholdDict[serverName]['PL_CT']
-                isgoodcm = server['ping_10086'] > thresholdDict[serverName]['PL_CM']
+                isgooddisk = float(server['hdd_used']) / (server['hdd_total'] if server['hdd_total'] != 0 else 1e16) < thresholdDict[serverName]['DU_THRES']/100.0
+                isgoodtcp = float(server['tcp_count']) < thresholdDict[serverName]['TCP_THRES']
+                isgoodcu = float(server['ping_10010']) < thresholdDict[serverName]['PL_CU']
+                isgoodct = float(server['ping_189']) < thresholdDict[serverName]['PL_CT']
+                isgoodcm = float(server['ping_10086']) < thresholdDict[serverName]['PL_CM']
                 
                 ## if server is previously offline and now online, remove it from offline list
                 if serverName in offline:
@@ -253,7 +245,7 @@ while True:
                     logging.info(f"Remove offline server: {serverName}")
                 
                 ## if server load >= threshold and not reach notify threshold, add it to highload list
-                if (not isgoodload) and (highload.count(serverName) > load_notify_threshold):
+                if (not isgoodload) and (highload.count(serverName) < load_notify_threshold):
                     highload.append(serverName)
                     logging.info(f"Add high load server: {serverName}, load {load}")
                 ## else if server load < threshold and previously in highload list, remove it
@@ -262,7 +254,7 @@ while True:
                     logging.info(f"Remove high load server: {serverName}, load {load}")
                 
                 ## if server is blocked and not reach notify threshold, add it to blocked list
-                if (not isfree) and (blocked.count(serverName) > block_notify_threshold):
+                if (not isfree) and (blocked.count(serverName) < block_notify_threshold):
                     blocked.append(serverName)
                     logging.info(f"Add blocked server: {serverName}")
                 ## else if server is unblocked and previously in blocked list, remove it
@@ -271,7 +263,7 @@ while True:
                     logging.info(f"Remove blocked server: {serverName}")
                     
                 ## if server disk usage >= threshold and not reach notify threshold, add it to diskfull list
-                if (not isgooddisk) and (diskfull.count(serverName > diskfull_notify_threshold)):
+                if (not isgooddisk) and (diskfull.count(serverName < diskfull_notify_threshold)):
                     diskfull.append(serverName)
                     logging.info(f"Add disk full server: {serverName}")
                 ## else if server is not disk full and previously in diskfull list, remove it
@@ -280,7 +272,7 @@ while True:
                     logging.info(f"Remove disk full server: {serverName}")
                 
                 ## if server tcp count >= threshold and not reach notify threshold, add it to tcptoomany list
-                if (not isgoodtcp) and (tcptoomany.count(serverName) > tcpcount_notify_threshold):
+                if (not isgoodtcp) and (tcptoomany.count(serverName) < tcpcount_notify_threshold):
                     tcptoomany.append(serverName)
                     logging.info(f"Add tcptoomany server: {serverName}")
                 ## else if server is not too many tcp and previously in toomanytcp list, remove it
@@ -289,7 +281,7 @@ while True:
                     logging.info(f"Remove tcptoomany server: {serverName}")
                 
                 ## if server successful ping to CU >= threshold and not reach notify threshold, add it to badcu list
-                if (not isgoodcu) and (badcu.count(serverName) > badcu_notify_threshold):
+                if (not isgoodcu) and (badcu.count(serverName) < badcu_notify_threshold):
                     badcu.append(serverName)
                     logging.info(f"Add bad cu server: {serverName}")
                 ## else if server is not bad cu and previously in badcu list, remove it
@@ -298,7 +290,7 @@ while True:
                     logging.info(f"Remove bad cu server: {serverName}")
                 
                 ## if server successful ping to CT >= threshold and not reach notify threshold, add it to badct list
-                if (not isgoodct) and (badct.count(serverName) > badct_notify_threshold):
+                if (not isgoodct) and (badct.count(serverName) < badct_notify_threshold):
                     badct.append(serverName)
                     logging.info(f"Add bad ct server: {serverName}")
                 ## else if server is not bad ct and previously in badct list, remove it
@@ -307,7 +299,7 @@ while True:
                     logging.info(f"Remove bad ct server: {serverName}")
                 
                 ## if server successful ping to CM >= threshold and not reach notify threshold, add it to badcm list
-                if (not isgoodcm) and (badcm.count(serverName) > badcm_notify_threshold):
+                if (not isgoodcm) and (badcm.count(serverName) < badcm_notify_threshold):
                     badcm.append(serverName)
                     logging.info(f"Add bad cm server: {serverName}")
                 ## else if server is not bad cm and previously in badcm list, remove it
