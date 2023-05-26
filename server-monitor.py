@@ -514,7 +514,7 @@ while True:
             text = f'#ServerStatus {server_id}\n服务器监视器遇到问题，请查看日志。'
             _tgapi_call(text)
         logging.error(f'Server monitor killed by an error.\n\n{e}')
-        traceback.print_exc()
+        logging.exception(f'Exception occurred: {e}')
         _stash(stash_json)
-        # break
+        break
 
