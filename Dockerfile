@@ -1,10 +1,10 @@
-FROM alpine:3.15.0
+FROM python:3.9-slim-buster
 
-RUN apk add --update --no-cache python3 py3-requests
-RUN mkdir -p /ServerStatus/json /ServerStatus/log
+RUN pip install requests && \
+    mkdir -p /ServerStatus/json /ServerStatus/log
 
-COPY ./server-monitor.py /ServerStatus/server-monitor.py
+COPY server-monitor.py /ServerStatus/
 
 WORKDIR /ServerStatus
 
-ENTRYPOINT python3 -u /ServerStatus/server-monitor.py
+ENTRYPOINT ["python3", "-u", "server-monitor.py"]
