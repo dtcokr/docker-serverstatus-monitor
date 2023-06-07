@@ -128,16 +128,22 @@ signal.signal(signal.SIGTERM, _handle_sigterm)
 def _tgapi_call(text):
     tgapi_url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
     payload = {'chat_id': account_id, 'text': text, 'parse_mode': 'Markdown'}
-    for _ in range(20):
+    maxRetry = 5
+    retryCount = 0
+    while retryCount < maxRetry:
         try:
-            requests.get(tgapi_url, params=payload)
-        except Exception as e:
-            if lang_uage == 'EN':
-                logging.error(f'{e}\nretrying..')
-            elif lang_uage == 'ZH':
-                logging.error(f'{e}\n正在重试..')
-        else:
+            response = requests.get(tgapi_url, params=payload)
+            response.raise_for_status()
+            logging.info(f"Telegram notification sent.")
             break
+        except Exception as e:
+            logging.exception(f'ERROR, retrying..\n{e}')
+            logging.error(response.json())
+            retryCount += 1
+    else:
+        logging.error('Max retry exceeded, failed to call TG API.')
+
+    return
 
 ## function to read default/custom threshold
 def _readThreshold(configJson):
