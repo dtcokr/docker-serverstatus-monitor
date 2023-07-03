@@ -215,6 +215,7 @@ elif lang_uage == 'ZH':
     text = f'#ServerStatus {server_id}\n服务器监视器已启动。'
     _tgapi_call(text)
 
+## main loop starts here
 while True:
     try:
         ## status gathering
@@ -230,7 +231,7 @@ while True:
                 offline.append(serverName)
                 logging.info(f"Add offline server: {serverName}")
 
-            ## if server is online, other data is available
+            ## only if server is online, other data is available
             elif isonline is True:
                 ## isfree is True means server is not blocked by CU and CT and CM
                 ## isGood is True means server successful ping to CU, CT, CM is good
@@ -412,13 +413,13 @@ while True:
             ## else if server tcp connection is not too many and previously notified because of too many tcp, notify and remove it from too many tcp notify list
             elif (serverName not in tcptoomany) and (serverName in tcpnotify):
                 if lang_uage == 'EN':
-                    text = f"#ServerStatus {server_id}\n#{serverName} TCP connections return to normal: {server['tcp_count']}"
+                    text = f"#ServerStatus {server_id}\n#{serverName} TCP connections back to normal: {server['tcp_count']}"
                     _tgapi_call(text)
                 else:
                     text = f"#ServerStatus {server_id}\n#{serverName} TCP 连接数恢复正常: {server['tcp_count']}"
                     _tgapi_call(text)
                 tcpnotify = list(filter((serverName).__ne__, tcpnotify))
-                logging.info(f"TCP connection return to normal: {serverName}")
+                logging.info(f"TCP connection back to normal: {serverName}")
             
             ## if server reaches bad cu notify threshold and not notified yet, notify and add it to notified list
             if (badcu.count(serverName) >= badcu_notify_threshold) and (serverName not in badcunotify):
@@ -433,13 +434,13 @@ while True:
             ## else if server tcp connection is not too many and previously notified because of too many tcp, notify and remove it from too many tcp notify list
             elif (serverName not in badcu) and (serverName in badcunotify):
                 if lang_uage == 'EN':
-                    text = f"#ServerStatus {server_id}\n#{serverName} packet loss to CU return to NORMAL: {server['ping_10010']}%"
+                    text = f"#ServerStatus {server_id}\n#{serverName} packet loss to CU back to NORMAL: {server['ping_10010']}%"
                     _tgapi_call(text)
                 else:
                     text = f"#ServerStatus {server_id}\n#{serverName} CU 丢包率恢复正常: {server['ping_10010']}%"
                     _tgapi_call(text)
                 badcunotify = list(filter((serverName).__ne__, badcunotify))
-                logging.info(f"Bad CU server return to normal: {serverName}")
+                logging.info(f"Bad CU server back to normal: {serverName}")
             
             ## if server reaches bad ct notify threshold and not notified yet, notify and add it to notified list
             if (badct.count(serverName) >= badct_notify_threshold) and (serverName not in badctnotify):
@@ -454,13 +455,13 @@ while True:
             ## else if server tcp connection is not too many and previously notified because of too many tcp, notify and remove it from too many tcp notify list
             elif (serverName not in badct) and (serverName in badctnotify):
                 if lang_uage == 'EN':
-                    text = f"#ServerStatus {server_id}\n#{serverName} packet loss to CT return to NORMAL: {server['ping_189']}%"
+                    text = f"#ServerStatus {server_id}\n#{serverName} packet loss to CT back to NORMAL: {server['ping_189']}%"
                     _tgapi_call(text)
                 else:
                     text = f"#ServerStatus {server_id}\n#{serverName} CT 丢包率恢复正常: {server['ping_189']}%"
                     _tgapi_call(text)
                 badctnotify = list(filter((serverName).__ne__, badctnotify))
-                logging.info(f"Bad CT server return to normal: {serverName}")
+                logging.info(f"Bad CT server back to normal: {serverName}")
             
                         ## if server reaches bad ct notify threshold and not notified yet, notify and add it to notified list
             if (badcm.count(serverName) >= badcm_notify_threshold) and (serverName not in badcmnotify):
@@ -475,13 +476,13 @@ while True:
             ## else if server tcp connecmion is not too many and previously notified because of too many tcp, notify and remove it from too many tcp notify list
             elif (serverName not in badcm) and (serverName in badcmnotify):
                 if lang_uage == 'EN':
-                    text = f"#ServerStatus {server_id}\n#{serverName} packet loss to CM return to NORMAL: {server['ping_10086']}%"
+                    text = f"#ServerStatus {server_id}\n#{serverName} packet loss to CM back to NORMAL: {server['ping_10086']}%"
                     _tgapi_call(text)
                 else:
                     text = f"#ServerStatus {server_id}\n#{serverName} CM 丢包率恢复正常: {server['ping_10086']}%"
                     _tgapi_call(text)
                 badcmnotify = list(filter((serverName).__ne__, badcmnotify))
-                logging.info(f"Bad cm server return to normal: {serverName}")
+                logging.info(f"Bad cm server back to normal: {serverName}")
         
         time.sleep(monitor_interval)
         
